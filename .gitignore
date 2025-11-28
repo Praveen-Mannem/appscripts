@@ -1,0 +1,25 @@
+# Node modules (if you use any)
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+~$*
+
+# Environment variables
+.env
+.env.local
