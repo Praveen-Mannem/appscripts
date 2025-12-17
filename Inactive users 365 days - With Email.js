@@ -9,11 +9,12 @@
  * @scope https://www.googleapis.com/auth/admin.directory.user.readonly
  * @scope https://www.googleapis.com/auth/admin.directory.customer.readonly
  * @scope https://www.googleapis.com/auth/apps.licensing
+ * @scope https://www.googleapis.com/auth/admin.reports.audit.readonly
  * @scope https://www.googleapis.com/auth/spreadsheets
  */
 
 /**
- * Google Workspace User Audit Script
+ * Google Workspace User Audit Script (365 Days Inactivity)
  * 
  * Purpose:
  * Identifies users who:
@@ -26,11 +27,13 @@
  * Prerequisites:
  * - Enable "Admin SDK API" in Apps Script Services.
  * - Enable "Admin License Manager API" in Apps Script Services.
+ * - Enable "Admin Reports API" in Apps Script Services (for accurate login tracking).
  * - Run this script with a Google Workspace Super Admin account.
  * 
  * OPTIMIZATION:
  * This script fetches ALL license assignments ONCE, then matches them to users.
- * This avoids hitting API quota limits when checking many users.
+ * Uses HYBRID approach: Reports API (most accurate) + Directory API (fallback).
+ * This avoids hitting API quota limits and provides accurate login data.
  */
 
 // Configuration
@@ -39,11 +42,11 @@ const CONFIG = {
     // See SKU_CATALOG below for more options.
     TARGET_SKU_ID: '1010020020',
     PRODUCT_ID: 'Google-Apps',
-    INACTIVITY_DAYS: 180,
+    INACTIVITY_DAYS: 365,
 
     // Email Configuration
     EMAIL_RECIPIENTS: 'email1@example.com, email2@example.com, email3@example.com',
-    EMAIL_SUBJECT: 'Inactive Enterprise Plus Users Audit Report (180 Days)',
+    EMAIL_SUBJECT: 'Inactive Enterprise Plus Users Audit Report (365 Days)',
     SEND_EMAIL: true // Set to false to disable email notifications
 };
 
@@ -326,7 +329,7 @@ function getInactiveUsers(cutoffDate) {
  * Exports the list of users to a new Google Sheet and sends email notification.
  */
 function exportToSheet(users) {
-    const ss = SpreadsheetApp.create('Inactive Enterprise Plus Users Audit (180 Days)');
+    const ss = SpreadsheetApp.create('Inactive Enterprise Plus Users Audit (365 Days)');
     const sheet = ss.getActiveSheet();
 
     // Headers
