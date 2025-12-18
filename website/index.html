@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Collection of Google Apps Scripts for Google Workspace administration - Inactive Users Audit and Groups Audit tools">
+    <meta name="keywords" content="Google Apps Script, Google Workspace, Admin Tools, Inactive Users, Groups Audit">
+    <meta name="author" content="Apps Script Repository">
+    <title>Google Apps Script Repository | Workspace Admin Tools</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo-icon">📜</span>
+                <span class="logo-text">Apps Script Hub</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#inactive-users" class="nav-link">Inactive Users</a></li>
+                <li><a href="#groups-audit" class="nav-link">Groups Audit</a></li>
+                <li><a href="#setup" class="nav-link">Setup Guide</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="gradient-text">Google Apps Scripts</span>
+                    <br>for Workspace Administration
+                </h1>
+                <p class="hero-subtitle">
+                    Production-ready scripts to audit inactive users and manage group ownership in Google Workspace. 
+                    Built for enterprise-scale organizations with 50,000+ users and 5,000+ groups.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Ready Scripts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Users Supported</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Open Source</div>
+                    </div>
+                </div>
+                <div class="hero-cta">
+                    <a href="#inactive-users" class="btn btn-primary">Explore Scripts</a>
+                    <a href="#setup" class="btn btn-secondary">Setup Guide</a>
+                </div>
+            </div>
+        </div>
+        <div class="hero-bg"></div>
+    </section>
+
+    <!-- Overview Section -->
+    <section class="overview">
+        <div class="container">
+            <h2 class="section-title">Available Scripts</h2>
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <div class="card-icon">👥</div>
+                    <h3>Inactive Users Audit (180 Days - Auto)</h3>
+                    <p>Automatically audits users with specific licenses who haven't logged in for 180 days. Includes monthly trigger setup.</p>
+                    <a href="#script-180-auto" class="card-link">View Script →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">📊</div>
+                    <h3>Inactive Users Audit (180 Days - Manual)</h3>
+                    <p>Manual execution version of the 180-day audit. Perfect for on-demand reporting and testing.</p>
+                    <a href="#script-180-manual" class="card-link">View Script →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">📅</div>
+                    <h3>Inactive Users Audit (365 Days)</h3>
+                    <p>Annual audit for users inactive for a full year. Ideal for license reclamation and compliance.</p>
+                    <a href="#script-365" class="card-link">View Script →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">🔐</div>
+                    <h3>Groups Audit - Batch Processing</h3>
+                    <p>Enterprise-scale batch processor for auditing groups without owners or managers. Handles 5,000+ groups efficiently.</p>
+                    <a href="#script-groups" class="card-link">View Script →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inactive Users Section -->
+    <section id="inactive-users" class="scripts-section">
+        <div class="container">
+            <h2 class="section-title">Inactive Users Audit Scripts</h2>
+            <p class="section-description">
+                These scripts use a hybrid approach combining the Admin Reports API and Directory API to accurately identify 
+                inactive users with specific Google Workspace licenses. Perfect for license optimization and compliance reporting.
+            </p>
+
+            <!-- Script 1: 180 Days Auto -->
+            <div id="script-180-auto" class="script-block">
+                <div class="script-header">
+                    <h3>Inactive Users Audit - 180 Days (Auto Run)</h3>
+                    <div class="script-badges">
+                        <span class="badge badge-auto">Automated</span>
+                        <span class="badge badge-reports">Reports API</span>
+                        <span class="badge badge-email">Email Alerts</span>
+                    </div>
+                </div>
+                <div class="script-description">
+                    <p><strong>Purpose:</strong> Automatically audits users with a specific license (e.g., Enterprise Plus) who have been inactive for 180 days.</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>✅ Hybrid approach using Reports API + Directory API for accurate login tracking</li>
+                        <li>✅ Automatic monthly trigger setup (runs every 30 days)</li>
+                        <li>✅ Email notifications with formatted HTML reports</li>
+                        <li>✅ Generates Google Sheet with detailed user information</li>
+                        <li>✅ Supports 50,000+ users with optimized API calls</li>
+                    </ul>
+                </div>
+                <div class="code-block-wrapper">
+                    <div class="code-header">
+                        <span class="code-filename">Inactive users 180 days - Auto Run.js</span>
+                        <button class="btn-copy" data-target="code-180-auto">
+                            <span class="copy-icon">📋</span> Copy Code
+                        </button>
+                    </div>
+                    <pre><code id="code-180-auto" class="language-javascript">// View full code in the download section below</code></pre>
+                    <a href="scripts/inactive-180-auto.js" download class="btn btn-download">⬇️ Download Full Script</a>
+                </div>
+            </div>
+
+            <!-- Script 2: 180 Days Manual -->
+            <div id="script-180-manual" class="script-block">
+                <div class="script-header">
+                    <h3>Inactive Users Audit - 180 Days (Manual)</h3>
+                    <div class="script-badges">
+                        <span class="badge badge-manual">Manual</span>
+                        <span class="badge badge-reports">Reports API</span>
+                        <span class="badge badge-email">Email Alerts</span>
+                    </div>
+                </div>
+                <div class="script-description">
+                    <p><strong>Purpose:</strong> Same functionality as the auto version but designed for manual, on-demand execution.</p>
+                    <p><strong>Use Cases:</strong></p>
+                    <ul>
+                        <li>🔍 Testing and validation before automation</li>
+                        <li>📊 Ad-hoc reporting for management</li>
+                        <li>🎯 Quarterly or custom-schedule audits</li>
+                    </ul>
+                </div>
+                <div class="code-block-wrapper">
+                    <div class="code-header">
+                        <span class="code-filename">Inactive users 180 days - With Email.js</span>
+                        <button class="btn-copy" data-target="code-180-manual">
+                            <span class="copy-icon">📋</span> Copy Code
+                        </button>
+                    </div>
+                    <pre><code id="code-180-manual" class="language-javascript">// View full code in the download section below</code></pre>
+                    <a href="scripts/inactive-180-manual.js" download class="btn btn-download">⬇️ Download Full Script</a>
+                </div>
+            </div>
+
+            <!-- Script 3: 365 Days -->
+            <div id="script-365" class="script-block">
+                <div class="script-header">
+                    <h3>Inactive Users Audit - 365 Days</h3>
+                    <div class="script-badges">
+                        <span class="badge badge-manual">Manual</span>
+                        <span class="badge badge-reports">Reports API</span>
+                        <span class="badge badge-email">Email Alerts</span>
+                    </div>
+                </div>
+                <div class="script-description">
+                    <p><strong>Purpose:</strong> Audits users with a specific license who have been inactive for a full year (365 days).</p>
+                    <p><strong>Ideal For:</strong></p>
+                    <ul>
+                        <li>💰 License reclamation and cost optimization</li>
+                        <li>📋 Annual compliance reporting</li>
+                        <li>🔒 Security audits for dormant accounts</li>
+                    </ul>
+                </div>
+                <div class="code-block-wrapper">
+                    <div class="code-header">
+                        <span class="code-filename">Inactive users 365 days - With Email.js</span>
+                        <button class="btn-copy" data-target="code-365">
+                            <span class="copy-icon">📋</span> Copy Code
+                        </button>
+                    </div>
+                    <pre><code id="code-365" class="language-javascript">// View full code in the download section below</code></pre>
+                    <a href="scripts/inactive-365.js" download class="btn btn-download">⬇️ Download Full Script</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Groups Audit Section -->
+    <section id="groups-audit" class="scripts-section alt-bg">
+        <div class="container">
+            <h2 class="section-title">Groups Audit - Batch Processing</h2>
+            <p class="section-description">
+                Enterprise-scale solution for auditing Google Workspace groups without proper ownership. 
+                Designed specifically for organizations with 5,000+ groups using intelligent batch processing.
+            </p>
+
+            <div id="script-groups" class="script-block">
+                <div class="script-header">
+                    <h3>Groups Audit - Batch Processing for 5,000+ Groups</h3>
+                    <div class="script-badges">
+                        <span class="badge badge-batch">Batch Processing</span>
+                        <span class="badge badge-auto">Auto Resume</span>
+                        <span class="badge badge-enterprise">Enterprise</span>
+                    </div>
+                </div>
+                <div class="script-description">
+                    <p><strong>Purpose:</strong> Identifies Google Workspace groups missing OWNERS and/or MANAGERS with automatic progress tracking.</p>
+                    <p><strong>Key Features:</strong></p>
+                    <ul>
+                        <li>⚡ Processes 500 groups per batch (configurable)</li>
+                        <li>💾 Automatic progress saving between runs</li>
+                        <li>🔄 Auto-resume capability - picks up where it left off</li>
+                        <li>⏰ Optional automatic trigger (runs every 10 minutes)</li>
+                        <li>🛡️ Timeout protection with smart checkpointing</li>
+                        <li>📊 Comprehensive final report with statistics</li>
+                    </ul>
+                    <p><strong>Processing Options:</strong></p>
+                    <div class="info-boxes">
+                        <div class="info-box">
+                            <h4>Manual Batch Processing</h4>
+                            <p>Run <code>auditGroupsWithoutOwners()</code> multiple times. Each run processes 500 groups and saves progress automatically.</p>
+                        </div>
+                        <div class="info-box">
+                            <h4>Automatic Batch Processing</h4>
+                            <p>Run <code>createAutoBatchTrigger()</code> once. The script runs every 10 minutes until complete, then stops automatically.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-block-wrapper">
+                    <div class="code-header">
+                        <span class="code-filename">Groups Audit - Batch Processing.js</span>
+                        <button class="btn-copy" data-target="code-groups">
+                            <span class="copy-icon">📋</span> Copy Code
+                        </button>
+                    </div>
+                    <pre><code id="code-groups" class="language-javascript">// View full code in the download section below</code></pre>
+                    <a href="scripts/groups-batch.js" download class="btn btn-download">⬇️ Download Full Script</a>
+                </div>
+
+                <!-- Batch Processing Guide -->
+                <div class="guide-section">
+                    <h4>📖 Batch Processing Guide</h4>
+                    <div class="guide-content">
+                        <h5>Quick Start - Manual Processing</h5>
+                        <ol>
+                            <li>Run <code>auditGroupsWithoutOwners()</code> - processes first 500 groups</li>
+                            <li>Run again to process next 500 groups</li>
+                            <li>Repeat until complete - progress is saved automatically</li>
+                        </ol>
+
+                        <h5>Quick Start - Automatic Processing</h5>
+                        <ol>
+                            <li>Run <code>createAutoBatchTrigger()</code> once</li>
+                            <li>Script runs automatically every 10 minutes</li>
+                            <li>Stops automatically when complete</li>
+                            <li>To stop early: <code>deleteAutoBatchTrigger()</code></li>
+                        </ol>
+
+                        <h5>Available Functions</h5>
+                        <table class="functions-table">
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>auditGroupsWithoutOwners()</code></td>
+                                    <td>Start or continue the audit</td>
+                                </tr>
+                                <tr>
+                                    <td><code>checkAuditProgress()</code></td>
+                                    <td>View current progress without processing</td>
+                                </tr>
+                                <tr>
+                                    <td><code>resetAudit()</code></td>
+                                    <td>Clear all progress and start fresh</td>
+                                </tr>
+                                <tr>
+                                    <td><code>createAutoBatchTrigger()</code></td>
+                                    <td>Set up automatic processing every 10 minutes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>deleteAutoBatchTrigger()</code></td>
+                                    <td>Stop automatic processing</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h5>Time Estimates</h5>
+                        <div class="time-estimates">
+                            <div class="estimate-card">
+                                <strong>5,000 Groups</strong>
+                                <p>Manual: ~50 minutes (10 runs)</p>
+                                <p>Automatic: ~1.75 hours hands-off</p>
+                            </div>
+                            <div class="estimate-card">
+                                <strong>10,000 Groups</strong>
+                                <p>Manual: ~100 minutes (20 runs)</p>
+                                <p>Automatic: ~3.5 hours hands-off</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Setup Guide Section -->
+    <section id="setup" class="setup-section">
+        <div class="container">
+            <h2 class="section-title">Setup & Configuration Guide</h2>
+            
+            <div class="setup-grid">
+                <div class="setup-card">
+                    <div class="setup-number">1</div>
+                    <h3>Prerequisites</h3>
+                    <ul>
+                        <li>Google Workspace Super Admin account</li>
+                        <li>Access to Google Apps Script</li>
+                        <li>Admin SDK API enabled</li>
+                        <li>Admin Reports API enabled (for inactive users scripts)</li>
+                        <li>Admin License Manager API enabled (for inactive users scripts)</li>
+                    </ul>
+                </div>
+
+                <div class="setup-card">
+                    <div class="setup-number">2</div>
+                    <h3>Enable Required APIs</h3>
+                    <ol>
+                        <li>Open your Apps Script project</li>
+                        <li>Click on "Services" (+ icon on left sidebar)</li>
+                        <li>Add "Admin SDK API"</li>
+                        <li>Add "Admin Reports API" (for inactive users)</li>
+                        <li>Add "Admin License Manager API" (for inactive users)</li>
+                    </ol>
+                </div>
+
+                <div class="setup-card">
+                    <div class="setup-number">3</div>
+                    <h3>Configure Scripts</h3>
+                    <p>Update the <code>CONFIG</code> object in each script:</p>
+                    <pre><code class="language-javascript">const CONFIG = {
+    TARGET_SKU_ID: '1010020020',  // Your license SKU
+    EMAIL_RECIPIENTS: 'admin@example.com',
+    SEND_EMAIL: true,
+    INACTIVITY_DAYS: 180  // or 365
+};</code></pre>
+                </div>
+
+                <div class="setup-card">
+                    <div class="setup-number">4</div>
+                    <h3>Run & Authorize</h3>
+                    <ol>
+                        <li>Select the main function (e.g., <code>auditInactiveEnterpriseUsers</code>)</li>
+                        <li>Click "Run"</li>
+                        <li>Authorize the script when prompted</li>
+                        <li>Grant necessary permissions</li>
+                        <li>Check execution logs for results</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="important-note">
+                <h4>⚠️ Important Notes</h4>
+                <ul>
+                    <li><strong>Super Admin Required:</strong> These scripts must be run with a Super Admin account to access all APIs</li>
+                    <li><strong>Reports API Limitation:</strong> The Reports API only keeps 180 days of login data. For 365-day audits, the script falls back to Directory API data</li>
+                    <li><strong>API Quotas:</strong> Scripts are optimized to stay within Google's API quota limits, but very large organizations may need to adjust batch sizes</li>
+                    <li><strong>Testing:</strong> Always test with manual versions before setting up automatic triggers</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About</h4>
+                    <p>Production-ready Google Apps Scripts for Google Workspace administration. Built for enterprise-scale organizations.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Scripts</h4>
+                    <ul>
+                        <li><a href="#script-180-auto">Inactive Users 180 (Auto)</a></li>
+                        <li><a href="#script-180-manual">Inactive Users 180 (Manual)</a></li>
+                        <li><a href="#script-365">Inactive Users 365</a></li>
+                        <li><a href="#script-groups">Groups Audit</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#setup">Setup Guide</a></li>
+                        <li><a href="https://developers.google.com/apps-script" target="_blank">Apps Script Docs</a></li>
+                        <li><a href="https://developers.google.com/admin-sdk" target="_blank">Admin SDK Docs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Apps Script Repository. All scripts are provided as-is for educational and administrative purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
