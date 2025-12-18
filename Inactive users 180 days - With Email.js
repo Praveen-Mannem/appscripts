@@ -44,7 +44,12 @@ const CONFIG = {
     // Email Configuration
     EMAIL_RECIPIENTS: 'email1@example.com, email2@example.com, email3@example.com',
     EMAIL_SUBJECT: 'Inactive Enterprise Plus Users Audit Report (180 Days)',
-    SEND_EMAIL: true // Set to false to disable email notifications
+    SEND_EMAIL: true, // Set to false to disable email notifications
+
+    // Output Configuration
+    // If set, the script will append a new tab to this spreadsheet.
+    // If empty or default, it will create a new spreadsheet file each time.
+    SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE'
 };
 
 /**

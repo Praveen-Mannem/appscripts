@@ -44,7 +44,12 @@ const CONFIG = {
     // Email Configuration
     EMAIL_RECIPIENTS: 'email1@example.com, email2@example.com, email3@example.com',
     EMAIL_SUBJECT: 'Inactive Enterprise Plus Users Audit Report (180 Days)',
-    SEND_EMAIL: true // Set to false to disable email notifications
+    SEND_EMAIL: true, // Set to false to disable email notifications
+
+    // Output Configuration
+    // If set, the script will append a new tab to this spreadsheet.
+    // If empty or default, it will create a new spreadsheet file each time.
+    SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE'
 };
 
 /**
@@ -323,11 +328,28 @@ function getInactiveUsers(cutoffDate) {
 }
 
 /**
- * Exports the list of users to a new Google Sheet and sends email notification.
+ * Exports the list of users to the configured Google Sheet and sends email notification.
  */
 function exportToSheet(users) {
-    const ss = SpreadsheetApp.create('Inactive Enterprise Plus Users Audit (180 Days)');
-    const sheet = ss.getActiveSheet();
+    let ss;
+    let sheet;
+    const sheetName = `Audit ${Utilities.formatDate(new Date(), 'GMT', 'yyyy-MM-dd HH:mm')}`;
+
+    if (CONFIG.SPREADSHEET_ID && CONFIG.SPREADSHEET_ID !== 'YOUR_SPREADSHEET_ID_HERE') {
+        try {
+            ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+            sheet = ss.insertSheet(sheetName);
+        } catch (e) {
+            Logger.log(`Error opening spreadsheet with ID ${CONFIG.SPREADSHEET_ID}: ${e.message}`);
+            // Fallback to creating a new sheet if ID is invalid
+            ss = SpreadsheetApp.create(`Inactive Enterprise Plus Users Audit (180 Days) - ${sheetName}`);
+            sheet = ss.getActiveSheet();
+        }
+    } else {
+        // Fallback if no ID is configured
+        ss = SpreadsheetApp.create(`Inactive Enterprise Plus Users Audit (180 Days) - ${sheetName}`);
+        sheet = ss.getActiveSheet();
+    }
 
     // Headers
     sheet.appendRow(['Name', 'Email', 'Last Login Time', 'Creation Time', 'Suspended', 'Licenses']);
@@ -353,7 +375,7 @@ function exportToSheet(users) {
     sheet.autoResizeColumns(1, 6);
 
     const reportUrl = ss.getUrl();
-    Logger.log(`Report generated: ${reportUrl}`);
+    Logger.log(`Report generated: ${reportUrl} (Sheet: ${sheetName})`);
 
     // Send email if configured
     if (CONFIG.SEND_EMAIL && CONFIG.EMAIL_RECIPIENTS) {
