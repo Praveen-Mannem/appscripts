@@ -49,7 +49,16 @@ const CONFIG = {
     // Output Configuration
     // If set, the script will append a new tab to this spreadsheet.
     // If empty or default, it will create a new spreadsheet file each time.
-    SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE'
+    SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE',
+
+    // Shared Drive Configuration
+    // To save reports to a Shared Drive folder:
+    // 1. Open the Shared Drive folder in Google Drive
+    // 2. Copy the folder ID from the URL (the part after /folders/)
+    // 3. Paste it here
+    // Example URL: https://drive.google.com/drive/folders/1ABC123xyz...
+    // If empty, the spreadsheet will be created in "My Drive"
+    SHARED_DRIVE_FOLDER_ID: '0AA7GGQkHedVoUk9PVA'
 };
 
 /**
@@ -341,20 +350,27 @@ function exportToSheet(users) {
             // Fallback to creating a new sheet if ID is invalid
             ss = SpreadsheetApp.create(`Inactive Enterprise Plus Users Audit (180 Days) - ${sheetName}`);
             sheet = ss.getActiveSheet();
+
+            // Move to Shared Drive if configured
+            moveToSharedDrive(ss);
         }
     } else {
-        // Fallback if no ID is configured
+        // Create new spreadsheet
         ss = SpreadsheetApp.create(`Inactive Enterprise Plus Users Audit (180 Days) - ${sheetName}`);
         sheet = ss.getActiveSheet();
+
+        // Move to Shared Drive if configured
+        moveToSharedDrive(ss);
     }
 
     // Headers
-    sheet.appendRow(['Name', 'Email', 'Last Login Time', 'Creation Time', 'Suspended', 'Licenses']);
+    sheet.appendRow(['Name', 'Email', 'OU Path', 'Last Login Time', 'Creation Time', 'Suspended', 'Licenses']);
 
     // Data
     const rows = users.map(user => [
         user.name ? user.name.fullName : 'N/A',
         user.primaryEmail,
+        user.orgUnitPath || '/',
         user.lastLoginTime || 'Never',
         user.creationTime,
         user.suspended,
@@ -367,9 +383,9 @@ function exportToSheet(users) {
     }
 
     // Format the sheet
-    sheet.getRange(1, 1, 1, 6).setFontWeight('bold').setBackground('#4285f4').setFontColor('#ffffff');
+    sheet.getRange(1, 1, 1, 7).setFontWeight('bold').setBackground('#4285f4').setFontColor('#ffffff');
     sheet.setFrozenRows(1);
-    sheet.autoResizeColumns(1, 6);
+    sheet.autoResizeColumns(1, 7);
 
     const reportUrl = ss.getUrl();
     Logger.log(`Report generated: ${reportUrl} (Sheet: ${sheetName})`);
@@ -459,6 +475,37 @@ This report uses the Admin Reports API for accurate login tracking.
         Logger.log(`Email sent successfully to: ${CONFIG.EMAIL_RECIPIENTS}`);
     } catch (e) {
         Logger.log(`Error sending email: ${e.message}`);
+    }
+}
+
+/**
+ * Moves a spreadsheet to the configured Shared Drive folder
+ * @param {Spreadsheet} spreadsheet - The spreadsheet object to move
+ */
+function moveToSharedDrive(spreadsheet) {
+    // Check if Shared Drive folder is configured
+    if (!CONFIG.SHARED_DRIVE_FOLDER_ID || CONFIG.SHARED_DRIVE_FOLDER_ID === '') {
+        Logger.log('No Shared Drive folder configured. Spreadsheet created in My Drive.');
+        return;
+    }
+
+    try {
+        // Get the spreadsheet file
+        const file = DriveApp.getFileById(spreadsheet.getId());
+
+        // Get the target folder
+        const targetFolder = DriveApp.getFolderById(CONFIG.SHARED_DRIVE_FOLDER_ID);
+
+        // Move the file to the Shared Drive folder
+        file.moveTo(targetFolder);
+
+        Logger.log(`Spreadsheet moved to Shared Drive folder: ${targetFolder.getName()}`);
+    } catch (e) {
+        Logger.log(`Error moving spreadsheet to Shared Drive: ${e.message}`);
+        Logger.log('Please check that:');
+        Logger.log('1. The folder ID is correct');
+        Logger.log('2. You have edit access to the Shared Drive folder');
+        Logger.log('3. The folder exists and is accessible');
     }
 }
 
