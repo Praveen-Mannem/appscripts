@@ -115,36 +115,34 @@ function auditInactiveEnterpriseUsers() {
         return;
     }
 
-    // 3. Filter for users who are BOTH inactive AND have the target license
-    const targetUsers = [];
-
+    // 3. Add license information to ALL inactive users
     inactiveUsers.forEach(user => {
         const userEmail = user.primaryEmail.toLowerCase();
 
         // Check if this user has licenses
         if (licenseMap[userEmail]) {
             const userLicenses = licenseMap[userEmail];
+            const licenseString = userLicenses.map(l => getSkuName(l.skuId)).join(', ');
+            user.licenseString = licenseString;
 
-            // Check if they have the target SKU
+            // Mark if they have the target license
             const hasTarget = userLicenses.some(l => l.skuId === CONFIG.TARGET_SKU_ID);
-
-            if (hasTarget) {
-                const licenseString = userLicenses.map(l => getSkuName(l.skuId)).join(', ');
-                targetUsers.push({
-                    ...user,
-                    licenseString: licenseString
-                });
-            }
+            user.hasTargetLicense = hasTarget;
+        } else {
+            user.licenseString = 'No licenses';
+            user.hasTargetLicense = false;
         }
     });
 
+    // Count users with target license
+    const targetUsers = inactiveUsers.filter(u => u.hasTargetLicense);
     Logger.log(`Found ${targetUsers.length} users with Target License and Inactive.`);
 
-    // 4. Output to Spreadsheet
-    if (targetUsers.length > 0) {
-        exportToSheet(targetUsers);
+    // 4. Output ALL inactive users to Spreadsheet
+    if (inactiveUsers.length > 0) {
+        exportToSheet(inactiveUsers);
     } else {
-        Logger.log('No matching users found.');
+        Logger.log('No inactive users found.');
     }
 }
 
@@ -278,8 +276,7 @@ function getInactiveUsers(cutoffDate) {
             const response = AdminDirectory.Users.list({
                 customer: 'my_customer',
                 maxResults: 500,
-                pageToken: pageToken,
-                viewType: 'domain_public'
+                pageToken: pageToken
             });
 
             if (response.users) {
@@ -541,8 +538,7 @@ function checkAuthorizedScopes() {
     try {
         const users = AdminDirectory.Users.list({
             customer: 'my_customer',
-            maxResults: 1,
-            viewType: 'domain_public'
+            maxResults: 1
         });
         Logger.log('✅ Admin Directory API (Users.list) is working!');
         if (users.users && users.users.length > 0) {
