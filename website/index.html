@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Collection of Google Apps Scripts for Google Workspace administration - Inactive Users Audit and Groups Audit tools">
+    <meta name="description"
+        content="Collection of Google Apps Scripts for Google Workspace administration - Inactive Users Audit and Groups Audit tools">
     <meta name="keywords" content="Google Apps Script, Google Workspace, Admin Tools, Inactive Users, Groups Audit">
     <meta name="author" content="Apps Script Repository">
     <title>Google Apps Script Repository | Workspace Admin Tools</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -41,7 +45,7 @@
                     <br>for Workspace Administration
                 </h1>
                 <p class="hero-subtitle">
-                    Production-ready scripts to audit inactive users and manage group ownership in Google Workspace. 
+                    Production-ready scripts to audit inactive users and manage group ownership in Google Workspace.
                     Built for enterprise-scale organizations with 50,000+ users and 5,000+ groups.
                 </p>
                 <div class="hero-stats">
@@ -75,7 +79,8 @@
                 <div class="feature-card">
                     <div class="card-icon">👥</div>
                     <h3>Inactive Users Audit (180 Days - Auto)</h3>
-                    <p>Automatically audits users with specific licenses who haven't logged in for 180 days. Includes monthly trigger setup.</p>
+                    <p>Automatically audits users with specific licenses who haven't logged in for 180 days. Includes
+                        monthly trigger setup.</p>
                     <a href="#script-180-auto" class="card-link">View Script →</a>
                 </div>
                 <div class="feature-card">
@@ -87,13 +92,15 @@
                 <div class="feature-card">
                     <div class="card-icon">📅</div>
                     <h3>Inactive Users Audit (365 Days)</h3>
-                    <p>Annual audit for users inactive for a full year. Ideal for license reclamation and compliance.</p>
+                    <p>Annual audit for users inactive for a full year. Ideal for license reclamation and compliance.
+                    </p>
                     <a href="#script-365" class="card-link">View Script →</a>
                 </div>
                 <div class="feature-card">
                     <div class="card-icon">🔐</div>
                     <h3>Groups Audit - Batch Processing</h3>
-                    <p>Enterprise-scale batch processor for auditing groups without owners or managers. Handles 5,000+ groups efficiently.</p>
+                    <p>Enterprise-scale batch processor for auditing groups without owners or managers. Handles 5,000+
+                        groups efficiently.</p>
                     <a href="#script-groups" class="card-link">View Script →</a>
                 </div>
             </div>
@@ -105,8 +112,10 @@
         <div class="container">
             <h2 class="section-title">Inactive Users Audit Scripts</h2>
             <p class="section-description">
-                These scripts use a hybrid approach combining the Admin Reports API and Directory API to accurately identify 
-                inactive users with specific Google Workspace licenses. Perfect for license optimization and compliance reporting.
+                These scripts use a hybrid approach combining the Admin Reports API and Directory API to accurately
+                identify
+                inactive users with specific Google Workspace licenses. Perfect for license optimization and compliance
+                reporting.
             </p>
 
             <!-- Script 1: 180 Days Auto -->
@@ -120,7 +129,8 @@
                     </div>
                 </div>
                 <div class="script-description">
-                    <p><strong>Purpose:</strong> Automatically audits users with a specific license (e.g., Enterprise Plus) who have been inactive for 180 days.</p>
+                    <p><strong>Purpose:</strong> Automatically audits users with a specific license (e.g., Enterprise
+                        Plus) who have been inactive for 180 days.</p>
                     <p><strong>Features:</strong></p>
                     <ul>
                         <li>✅ Hybrid approach using Reports API + Directory API for accurate login tracking</li>
@@ -153,7 +163,8 @@
                     </div>
                 </div>
                 <div class="script-description">
-                    <p><strong>Purpose:</strong> Same functionality as the auto version but designed for manual, on-demand execution.</p>
+                    <p><strong>Purpose:</strong> Same functionality as the auto version but designed for manual,
+                        on-demand execution.</p>
                     <p><strong>Use Cases:</strong></p>
                     <ul>
                         <li>🔍 Testing and validation before automation</li>
@@ -169,7 +180,8 @@
                         </button>
                     </div>
                     <pre><code id="code-180-manual" class="language-javascript">// View full code in the download section below</code></pre>
-                    <a href="scripts/inactive-180-manual.js" download class="btn btn-download">⬇️ Download Full Script</a>
+                    <a href="scripts/inactive-180-manual.js" download class="btn btn-download">⬇️ Download Full
+                        Script</a>
                 </div>
             </div>
 
@@ -184,7 +196,8 @@
                     </div>
                 </div>
                 <div class="script-description">
-                    <p><strong>Purpose:</strong> Audits users with a specific license who have been inactive for a full year (365 days).</p>
+                    <p><strong>Purpose:</strong> Audits users with a specific license who have been inactive for a full
+                        year (365 days).</p>
                     <p><strong>Ideal For:</strong></p>
                     <ul>
                         <li>💰 License reclamation and cost optimization</li>
@@ -211,7 +224,7 @@
         <div class="container">
             <h2 class="section-title">Groups Audit - Batch Processing</h2>
             <p class="section-description">
-                Enterprise-scale solution for auditing Google Workspace groups without proper ownership. 
+                Enterprise-scale solution for auditing Google Workspace groups without proper ownership.
                 Designed specifically for organizations with 5,000+ groups using intelligent batch processing.
             </p>
 
@@ -225,7 +238,8 @@
                     </div>
                 </div>
                 <div class="script-description">
-                    <p><strong>Purpose:</strong> Identifies Google Workspace groups missing OWNERS and/or MANAGERS with automatic progress tracking.</p>
+                    <p><strong>Purpose:</strong> Identifies Google Workspace groups missing OWNERS and/or MANAGERS with
+                        automatic progress tracking.</p>
                     <p><strong>Key Features:</strong></p>
                     <ul>
                         <li>⚡ Processes 500 groups per batch (configurable)</li>
@@ -239,11 +253,13 @@
                     <div class="info-boxes">
                         <div class="info-box">
                             <h4>Manual Batch Processing</h4>
-                            <p>Run <code>auditGroupsWithoutOwners()</code> multiple times. Each run processes 500 groups and saves progress automatically.</p>
+                            <p>Run <code>auditGroupsWithoutOwners()</code> multiple times. Each run processes 500 groups
+                                and saves progress automatically.</p>
                         </div>
                         <div class="info-box">
                             <h4>Automatic Batch Processing</h4>
-                            <p>Run <code>createAutoBatchTrigger()</code> once. The script runs every 10 minutes until complete, then stops automatically.</p>
+                            <p>Run <code>createAutoBatchTrigger()</code> once. The script runs every 10 minutes until
+                                complete, then stops automatically.</p>
                         </div>
                     </div>
                 </div>
@@ -332,7 +348,7 @@
     <section id="setup" class="setup-section">
         <div class="container">
             <h2 class="section-title">Setup & Configuration Guide</h2>
-            
+
             <div class="setup-grid">
                 <div class="setup-card">
                     <div class="setup-number">1</div>
@@ -386,10 +402,14 @@
             <div class="important-note">
                 <h4>⚠️ Important Notes</h4>
                 <ul>
-                    <li><strong>Super Admin Required:</strong> These scripts must be run with a Super Admin account to access all APIs</li>
-                    <li><strong>Reports API Limitation:</strong> The Reports API only keeps 180 days of login data. For 365-day audits, the script falls back to Directory API data</li>
-                    <li><strong>API Quotas:</strong> Scripts are optimized to stay within Google's API quota limits, but very large organizations may need to adjust batch sizes</li>
-                    <li><strong>Testing:</strong> Always test with manual versions before setting up automatic triggers</li>
+                    <li><strong>Super Admin Required:</strong> These scripts must be run with a Super Admin account to
+                        access all APIs</li>
+                    <li><strong>Reports API Limitation:</strong> The Reports API only keeps 180 days of login data. For
+                        365-day audits, the script falls back to Directory API data</li>
+                    <li><strong>API Quotas:</strong> Scripts are optimized to stay within Google's API quota limits, but
+                        very large organizations may need to adjust batch sizes</li>
+                    <li><strong>Testing:</strong> Always test with manual versions before setting up automatic triggers
+                    </li>
                 </ul>
             </div>
         </div>
@@ -401,7 +421,8 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h4>About</h4>
-                    <p>Production-ready Google Apps Scripts for Google Workspace administration. Built for enterprise-scale organizations.</p>
+                    <p>Production-ready Google Apps Scripts for Google Workspace administration. Built for
+                        enterprise-scale organizations.</p>
                 </div>
                 <div class="footer-section">
                     <h4>Scripts</h4>
@@ -416,17 +437,22 @@
                     <h4>Resources</h4>
                     <ul>
                         <li><a href="#setup">Setup Guide</a></li>
-                        <li><a href="https://developers.google.com/apps-script" target="_blank">Apps Script Docs</a></li>
+                        <li><a href="https://support.google.com/a/?hl=en#topic=4388346" target="_blank">Google Workspace
+                                Support</a></li>
+                        <li><a href="https://developers.google.com/apps-script" target="_blank">Apps Script Docs</a>
+                        </li>
                         <li><a href="https://developers.google.com/admin-sdk" target="_blank">Admin SDK Docs</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Apps Script Repository. All scripts are provided as-is for educational and administrative purposes.</p>
+                <p>&copy; 2025 Apps Script Repository. All scripts are provided as-is for educational and administrative
+                    purposes.</p>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
+
 </html>
