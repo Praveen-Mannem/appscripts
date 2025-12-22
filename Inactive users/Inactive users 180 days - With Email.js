@@ -126,9 +126,12 @@ function auditInactiveEnterpriseUsers() {
         return;
     }
 
-    // 3. Add license information to ALL inactive users
+    // 3. Add license information and fetch Manager for ALL inactive users
     inactiveUsers.forEach(user => {
         const userEmail = user.primaryEmail.toLowerCase();
+
+        // Fetch Manager
+        user.managerEmail = getManager(userEmail) || 'N/A';
 
         // Check if this user has licenses
         if (licenseMap[userEmail]) {
@@ -155,6 +158,26 @@ function auditInactiveEnterpriseUsers() {
     } else {
         Logger.log('No inactive users found.');
     }
+}
+
+/**
+ * Gets the manager's email for a specific user.
+ * Returns null if no manager is found.
+ */
+function getManager(userEmail) {
+    try {
+        const user = AdminDirectory.Users.get(userEmail, { projection: 'full' });
+
+        if (user.relations) {
+            const managerRelation = user.relations.find(r => r.type === 'manager');
+            if (managerRelation) {
+                return managerRelation.value;
+            }
+        }
+    } catch (e) {
+        // Suppress errors for standard users
+    }
+    return null;
 }
 
 /**
@@ -344,13 +367,14 @@ function exportToSheet(users) {
     moveToSharedDrive(ss);
 
     // Headers
-    sheet.appendRow(['Name', 'Email', 'OU Path', 'Last Login Time', 'Creation Time', 'Suspended', 'Licenses']);
+    sheet.appendRow(['Name', 'Email', 'OU Path', 'Manager Email', 'Last Login Time', 'Creation Time', 'Suspended', 'Licenses']);
 
     // Data
     const rows = users.map(user => [
         user.name ? user.name.fullName : 'N/A',
         user.primaryEmail,
         user.orgUnitPath || '/',
+        user.managerEmail || 'N/A',
         user.lastLoginTime || 'Never',
         user.creationTime,
         user.suspended,
@@ -363,9 +387,9 @@ function exportToSheet(users) {
     }
 
     // Format the sheet
-    sheet.getRange(1, 1, 1, 7).setFontWeight('bold').setBackground('#4285f4').setFontColor('#ffffff');
+    sheet.getRange(1, 1, 1, 8).setFontWeight('bold').setBackground('#4285f4').setFontColor('#ffffff');
     sheet.setFrozenRows(1);
-    sheet.autoResizeColumns(1, 7);
+    sheet.autoResizeColumns(1, 8);
 
     const reportUrl = ss.getUrl();
     Logger.log(`Report generated: ${reportUrl}`);
