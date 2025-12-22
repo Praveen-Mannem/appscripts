@@ -36,9 +36,7 @@ const CONFIG = {
     // Safety: Set to true to actually suspend users. Set to false for a dry run (reporting only).
     PERFORM_SUSPENSION: true,
 
-    // Drive Transfer Configuration
-    TRANSFER_TO_MANAGER: true, // If true, transfers Drive files to manager
-    DRIVE_APPLICATION_ID: '55656082996', // Application ID for Drive and Docs
+
 
     // Email Configuration
     EMAIL_RECIPIENTS: 'email1@example.com, email2@example.com, email3@example.com',
@@ -135,7 +133,6 @@ function suspendInactiveUsers() {
 
                 // Perform Suspension if enabled
                 let actionStatus = 'Dry Run - Would Suspend';
-                let transferStatus = 'N/A';
 
                 if (CONFIG.PERFORM_SUSPENSION) {
                     try {
@@ -145,11 +142,6 @@ function suspendInactiveUsers() {
                             actionStatus = 'SUSPENDED';
                             user.suspended = true; // Update local object for report
                             Logger.log(`SUSPENDED User: ${userEmail}`);
-
-                            // Transfer Drive Files to Manager
-                            if (CONFIG.TRANSFER_TO_MANAGER) {
-                                transferStatus = transferFilesToManager(userEmail);
-                            }
                         } else {
                             actionStatus = 'Already Suspended';
                             Logger.log(`Skipping User: ${userEmail} (Already Suspended)`);
@@ -161,7 +153,6 @@ function suspendInactiveUsers() {
                 }
 
                 user.actionStatus = actionStatus;
-                user.transferStatus = transferStatus;
                 suspendedUsers.push(user);
             }
         }
@@ -188,7 +179,7 @@ function exportToSheet(users) {
     moveToSharedDrive(ss);
 
     // Headers
-    sheet.appendRow(['Name', 'Email', 'OU Path', 'Last Login Time', 'Suspended', 'Licenses', 'Action Status', 'Transfer Status']);
+    sheet.appendRow(['Name', 'Email', 'OU Path', 'Last Login Time', 'Suspended', 'Licenses', 'Action Status']);
 
     // Data
     const rows = users.map(user => [
@@ -198,8 +189,7 @@ function exportToSheet(users) {
         user.lastLoginTime || 'Never',
         user.suspended,
         user.licenseString,
-        user.actionStatus,
-        user.transferStatus || 'N/A'
+        user.actionStatus
     ]);
 
     if (rows.length > 0) {
@@ -207,9 +197,9 @@ function exportToSheet(users) {
     }
 
     // Format
-    sheet.getRange(1, 1, 1, 8).setFontWeight('bold').setBackground('#d93025').setFontColor('#ffffff'); // Red header for Suspension
+    sheet.getRange(1, 1, 1, 7).setFontWeight('bold').setBackground('#d93025').setFontColor('#ffffff'); // Red header for Suspension
     sheet.setFrozenRows(1);
-    sheet.autoResizeColumns(1, 8);
+    sheet.autoResizeColumns(1, 7);
 
     const reportUrl = ss.getUrl();
     Logger.log(`Report generated: ${reportUrl}`);
@@ -219,62 +209,7 @@ function exportToSheet(users) {
     }
 }
 
-/**
- * Transfers Drive files to the user's manager.
- * Returns a status string for the report.
- */
-function transferFilesToManager(userEmail) {
-    try {
-        const managerEmail = getManager(userEmail);
 
-        if (!managerEmail) {
-            Logger.log(`No manager found for ${userEmail}. Skipping transfer.`);
-            return 'Skipped - No Manager Found';
-        }
-
-        Logger.log(`Initiating Drive transfer from ${userEmail} to ${managerEmail}...`);
-
-        const transfer = AdminDataTransfer.Transfers.insert(
-            {
-                oldOwnerUserId: userEmail,
-                newOwnerUserId: managerEmail,
-                applicationDataTransfers: [
-                    {
-                        applicationId: CONFIG.DRIVE_APPLICATION_ID,
-                        applicationTransferParams: [{ key: 'PRIVACY_LEVEL', value: ['PRIVATE', 'SHARED'] }]
-                    }
-                ]
-            }
-        );
-
-        Logger.log(`Transfer initiated. ID: ${transfer.id}`);
-        return `Initiated (To: ${managerEmail})`;
-
-    } catch (e) {
-        Logger.log(`Transfer failed for ${userEmail}: ${e.message}`);
-        return `Failed: ${e.message}`;
-    }
-}
-
-/**
- * Gets the manager's email for a specific user.
- * Returns null if no manager is found.
- */
-function getManager(userEmail) {
-    try {
-        const user = AdminDirectory.Users.get(userEmail, { projection: 'full' });
-
-        if (user.relations) {
-            const managerRelation = user.relations.find(r => r.type === 'manager');
-            if (managerRelation) {
-                return managerRelation.value;
-            }
-        }
-    } catch (e) {
-        Logger.log(`Error fetching manager for ${userEmail}: ${e.message}`);
-    }
-    return null;
-}
 
 
 // ---------------------------------------------------------------------------
