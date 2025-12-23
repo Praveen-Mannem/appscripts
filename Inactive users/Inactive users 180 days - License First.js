@@ -487,3 +487,21 @@ function getCutoffDate(daysAgo) {
     date.setDate(date.getDate() - daysAgo);
     return date;
 }
+
+/**
+ * ============================================================================
+ * DIAGNOSTIC & DEBUGGING FUNCTIONS
+ * ============================================================================
+ * 
+ * For debugging and troubleshooting tools, see the separate file:
+ * "Diagnostic Functions.js"
+ * 
+ * Available diagnostic functions:
+ * - debugSpecificUser(userEmail) - Check login data for a specific user
+ * - checkAuthorizedScopes() - Test API authorization
+ * - debugUserLicense(userEmail) - Check license assignments for a user
+ * - compareLoginDataSources(userEmail) - Compare Directory vs Reports API data
+ * 
+ * These functions are NOT required for normal operation of the audit script.
+ * ============================================================================
+ */

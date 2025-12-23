@@ -523,124 +523,24 @@ function getCutoffDate(daysAgo) {
 }
 
 /**
- * DIAGNOSTIC FUNCTION - Check specific user's login data
- * This helps debug why certain users show incorrect login times
+ * ============================================================================
+ * DIAGNOSTIC & DEBUGGING FUNCTIONS
+ * ============================================================================
  * 
- * @param {string} userEmail - Email address of the user to check
+ * Diagnostic functions have been moved to a separate file for better organization:
+ * "Diagnostic Functions.js"
+ * 
+ * Available diagnostic functions:
+ * - debugSpecificUser(userEmail) - Check login data for a specific user
+ * - checkAuthorizedScopes() - Test API authorization
+ * - debugUserLicense(userEmail) - Check license assignments for a user
+ * - compareLoginDataSources(userEmail) - Compare Directory vs Reports API data
+ * 
+ * To use these functions:
+ * 1. Open "Diagnostic Functions.js" in your Apps Script project
+ * 2. Select the function you want to run from the dropdown
+ * 3. Click Run
+ * 
+ * These functions are NOT required for normal operation of the audit script.
+ * ============================================================================
  */
-function debugSpecificUser(userEmail) {
-    Logger.log(`=== DEBUGGING USER: ${userEmail} ===`);
-
-    // 1. Check Admin Directory API data
-    try {
-        const user = AdminDirectory.Users.get(userEmail);
-        Logger.log('\n--- Admin Directory API Data ---');
-        Logger.log(`Primary Email: ${user.primaryEmail}`);
-        Logger.log(`Name: ${user.name ? user.name.fullName : 'N/A'}`);
-        Logger.log(`Last Login Time: ${user.lastLoginTime || 'NOT PROVIDED BY API'}`);
-        Logger.log(`Creation Time: ${user.creationTime}`);
-        Logger.log(`Suspended: ${user.suspended}`);
-        Logger.log(`Is Admin: ${user.isAdmin}`);
-        Logger.log(`Is Delegated Admin: ${user.isDelegatedAdmin}`);
-    } catch (e) {
-        Logger.log(`❌ Error fetching user from Directory API: ${e.message}`);
-    }
-
-    // 2. Check Reports API for actual login activity
-    try {
-        Logger.log('\n--- Checking Reports API for Login Activity ---');
-        const now = new Date();
-        const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-
-        const activities = AdminReports.Activities.list(
-            'user',
-            'login',
-            {
-                userKey: userEmail,
-                startTime: thirtyDaysAgo.toISOString(),
-                endTime: now.toISOString(),
-                maxResults: 10
-            }
-        );
-
-        if (activities.items && activities.items.length > 0) {
-            Logger.log(`✅ Found ${activities.items.length} login events in last 30 days`);
-            Logger.log('Most recent login events:');
-            activities.items.slice(0, 5).forEach((activity, index) => {
-                Logger.log(`  ${index + 1}. ${activity.id.time} - ${activity.events[0].name}`);
-            });
-        } else {
-            Logger.log('⚠️ No login events found in last 30 days via Reports API');
-        }
-    } catch (e) {
-        Logger.log(`❌ Error fetching from Reports API: ${e.message}`);
-        Logger.log('   You may need to enable the Admin Reports API');
-    }
-
-    Logger.log('\n=== DIAGNOSTIC COMPLETE ===');
-}
-
-/**
- * DIAGNOSTIC FUNCTION - Run this to check which APIs are authorized
- * This helps identify authorization issues
- */
-function checkAuthorizedScopes() {
-    Logger.log('=== CHECKING API AUTHORIZATION ===');
-
-    // Check OAuth Token
-    try {
-        const token = ScriptApp.getOAuthToken();
-        Logger.log('✅ OAuth Token obtained: ' + token.substring(0, 20) + '...');
-    } catch (e) {
-        Logger.log('❌ Failed to get OAuth token: ' + e.message);
-    }
-
-    // Test Admin Directory API - Customer
-    try {
-        const customer = AdminDirectory.Customers.get('my_customer');
-        Logger.log('✅ Admin Directory API (Customer) is working!');
-        Logger.log('   Customer ID: ' + customer.id);
-    } catch (e) {
-        Logger.log('❌ Admin Directory API (Customer) failed: ' + e.message);
-    }
-
-    // Test Admin Directory API - Users List
-    try {
-        const users = AdminDirectory.Users.list({
-            customer: 'my_customer',
-            maxResults: 1
-        });
-        Logger.log('✅ Admin Directory API (Users.list) is working!');
-        if (users.users && users.users.length > 0) {
-            Logger.log('   Sample user: ' + users.users[0].primaryEmail);
-        } else {
-            Logger.log('   No users returned (but API call succeeded)');
-        }
-    } catch (e) {
-        Logger.log('❌ Admin Directory API (Users.list) failed: ' + e.message);
-        Logger.log('   This is the error you\'re experiencing!');
-    }
-
-    // Test License Manager API
-    try {
-        const licenses = AdminLicenseManager.LicenseAssignments.listForProduct(
-            'Google-Apps',
-            'my_customer',
-            { maxResults: 1 }
-        );
-        Logger.log('✅ License Manager API is working!');
-        if (licenses.items && licenses.items.length > 0) {
-            Logger.log('   Sample license: ' + licenses.items[0].userId);
-        }
-    } catch (e) {
-        Logger.log('❌ License Manager API failed: ' + e.message);
-    }
-
-    Logger.log('=== DIAGNOSTIC COMPLETE ===');
-    Logger.log('');
-    Logger.log('NEXT STEPS:');
-    Logger.log('1. If Users.list failed: Follow the authorization fix guide');
-    Logger.log('2. Remove old authorization from myaccount.google.com/permissions');
-    Logger.log('3. Enable Admin SDK API in Google Cloud Console');
-    Logger.log('4. Re-authorize the script');
-}
