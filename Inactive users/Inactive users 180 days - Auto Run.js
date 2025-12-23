@@ -10,6 +10,10 @@
  * @scope https://www.googleapis.com/auth/admin.directory.customer.readonly
  * @scope https://www.googleapis.com/auth/apps.licensing
  * @scope https://www.googleapis.com/auth/spreadsheets
+ * @scope https://www.googleapis.com/auth/admin.reports.audit.readonly
+ * @scope https://www.googleapis.com/auth/script.send_mail
+ * @scope https://www.googleapis.com/auth/drive
+ * @scope https://www.googleapis.com/auth/script.scriptapp
  */
 
 /**
@@ -664,4 +668,107 @@ function setupMonthlyTrigger() {
         .create();
 
     Logger.log(`Successfully created trigger to run ${functionName} every 30 days.`);
+}
+
+/**
+ * Sets up a trigger to run the audit every 4 hours.
+ * Run this function manually once to initialize the schedule.
+ * 
+ * IMPORTANT: Running every 4 hours is very frequent for an audit script.
+ * Consider if this frequency is necessary, as it may:
+ * - Generate many reports and emails
+ * - Consume API quotas faster
+ * - Create redundant data (login activity doesn't change that often)
+ * 
+ * Recommended: Use daily or weekly triggers for most use cases.
+ */
+function setupEvery4HoursTrigger() {
+    const functionName = 'auditInactiveEnterpriseUsers';
+
+    // Check if trigger already exists
+    const triggers = ScriptApp.getProjectTriggers();
+    const exists = triggers.some(trigger => trigger.getHandlerFunction() === functionName);
+
+    if (exists) {
+        Logger.log(`⚠️ Trigger for ${functionName} already exists.`);
+        Logger.log('To replace it, first run deleteAllAuditTriggers() then run this function again.');
+        return;
+    }
+
+    // Create 4-hour interval trigger
+    ScriptApp.newTrigger(functionName)
+        .timeBased()
+        .everyHours(4)
+        .create();
+
+    Logger.log(`✅ Successfully created trigger to run ${functionName} every 4 hours.`);
+    Logger.log('⚠️ Note: This will run 6 times per day. Consider if this frequency is necessary.');
+}
+
+/**
+ * Sets up a TEST trigger to run the audit every 1 hour.
+ * Use this for TESTING ONLY to verify automation works.
+ * 
+ * TESTING WORKFLOW:
+ * 1. Run this function to create hourly trigger
+ * 2. Wait 1-2 hours and verify:
+ *    - Script executes successfully
+ *    - Report is generated
+ *    - Email is sent
+ * 3. Once verified, run deleteAllAuditTriggers()
+ * 4. Then run setupMonthlyTrigger() for production use
+ * 
+ * IMPORTANT: Don't forget to switch to monthly trigger after testing!
+ */
+function setupTestTrigger() {
+    const functionName = 'auditInactiveEnterpriseUsers';
+
+    // Check if trigger already exists
+    const triggers = ScriptApp.getProjectTriggers();
+    const exists = triggers.some(trigger => trigger.getHandlerFunction() === functionName);
+
+    if (exists) {
+        Logger.log(`⚠️ Trigger for ${functionName} already exists.`);
+        Logger.log('To replace it, first run deleteAllAuditTriggers() then run this function again.');
+        return;
+    }
+
+    // Create 1-hour test trigger
+    ScriptApp.newTrigger(functionName)
+        .timeBased()
+        .everyHours(1)
+        .create();
+
+    Logger.log(`✅ TEST TRIGGER CREATED - Runs every 1 hour`);
+    Logger.log(`📋 Next steps:`);
+    Logger.log(`   1. Wait 1-2 hours for trigger to fire`);
+    Logger.log(`   2. Check Executions tab for results`);
+    Logger.log(`   3. Verify email and report generation`);
+    Logger.log(`   4. Run deleteAllAuditTriggers()`);
+    Logger.log(`   5. Run setupMonthlyTrigger() for production`);
+    Logger.log(``);
+    Logger.log(`⚠️ REMEMBER: This is for testing only! Switch to monthly after verification.`);
+}
+
+/**
+ * Deletes all triggers for the audit function.
+ * Use this if you want to change the schedule or stop automation.
+ */
+function deleteAllAuditTriggers() {
+    const functionName = 'auditInactiveEnterpriseUsers';
+    const triggers = ScriptApp.getProjectTriggers();
+    let deletedCount = 0;
+
+    triggers.forEach(trigger => {
+        if (trigger.getHandlerFunction() === functionName) {
+            ScriptApp.deleteTrigger(trigger);
+            deletedCount++;
+        }
+    });
+
+    if (deletedCount > 0) {
+        Logger.log(`✅ Deleted ${deletedCount} trigger(s) for ${functionName}`);
+    } else {
+        Logger.log('ℹ️ No triggers found to delete.');
+    }
 }
