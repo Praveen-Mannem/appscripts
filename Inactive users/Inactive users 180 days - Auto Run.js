@@ -48,7 +48,7 @@ const CONFIG = {
     // Email Configuration
     EMAIL_RECIPIENTS: 'email1@example.com, email2@example.com, email3@example.com',
     EMAIL_SUBJECT: 'Inactive Enterprise Plus Users Audit Report (180 Days)',
-    SEND_EMAIL: true, // Set to false to disable email notifications
+    SEND_EMAIL: false, // Set to false to disable email notifications
 
     // Output Configuration
     // If set, the script will append a new tab to this spreadsheet.
