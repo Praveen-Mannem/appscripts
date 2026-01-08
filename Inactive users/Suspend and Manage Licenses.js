@@ -57,7 +57,7 @@ const CONFIG = {
 
     // License Assignment - Set to false if you don't want to assign Cloud Identity Free
     // (useful if you don't have Cloud Identity Free licenses available)
-    ASSIGN_CLOUD_IDENTITY_FREE: true, // Set to true to assign Cloud Identity Free after removing E-plus
+    ASSIGN_CLOUD_IDENTITY_FREE: false, // Set to true to assign Cloud Identity Free after removing E-plus
 
     // Email Configuration
     EMAIL_RECIPIENTS: 'email1@example.com, email2@example.com, email3@example.com',
@@ -77,9 +77,7 @@ const CONFIG = {
     // Exclusion Settings
     // Users in these OUs will NOT be suspended (e.g., /Executives, /IT)
     EXCLUDED_OU_PATHS: [
-        // '/Executives',
-        // '/IT',
-        // '/Management'
+        '/LH - legal hold'
     ],
 
     // Exclude admin users from suspension
